@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import numpy as np
+import numpy as np, matplotlib.cm
 from matplotlib import colors
 
 class Colormap(colors.ListedColormap):
@@ -15,6 +15,14 @@ class Colormap(colors.ListedColormap):
 
     def __getitem__(self, item):
         return Colormap(self._colors[item], name='sliced_' + self._name)
+
+    def _get_cmap(self, cname, cmap_file, reverse=False):
+        if cname in matplotlib.cm._colormaps.keys():
+            return matplotlib.cm.get_cmap(cname)
+        else:
+            cmap = Colormap(self._coltbl(cmap_file) if not reverse else self._coltbl(cmap_file)[::-1], name=cname)
+            matplotlib.cm.register_cmap(name=cname, cmap=cmap)
+            return cmap
 
     def show(self):
         import matplotlib.pyplot as plt

@@ -4,7 +4,6 @@ import os
 import re
 from glob import glob
 
-import matplotlib.cm
 import numpy as np
 
 from ._version import __version__
@@ -12,7 +11,10 @@ from .colormap import Colormap
 
 CMAPSFILE_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'colormaps')
-USER_CMAPFILE_DIR = os.environ.get('CMAP_DIR')
+try:
+    USER_CMAPFILE_DIR = os.environ['CMAP_DIR']
+except KeyError:
+    USER_CMAPFILE_DIR = None
 
 class Cmaps(object):
     """colormaps"""
@@ -33,8 +35,10 @@ class Cmaps(object):
 
 
     def _parse_cmaps(self):
-        if USER_CMAPFILE_DIR is not None:
-            cmapsflist = sorted(glob(os.path.join(USER_CMAPFILE_DIR, '*.rgb')))
+        if CMAPSFILE_DIR is not None and os.path.exists(CMAPSFILE_DIR):
+            cmapsflist = sorted(glob(os.path.join(CMAPSFILE_DIR,"ncar_ncl","*.rgb")))
+        if USER_CMAPFILE_DIR is not None and os.path.exists(USER_CMAPFILE_DIR):
+            cmapsflist += sorted(glob(os.path.join(USER_CMAPFILE_DIR, '*.rgb')))
             for cmap_file in cmapsflist:
                 cname = os.path.basename(cmap_file).split('.rgb')[0]
                 # start with the number will result illegal attribute
@@ -45,21 +49,9 @@ class Cmaps(object):
                 if '+' in cname:
                     cname = cname.replace('+', '_')
 
-                try:
-                    if cname in matplotlib.cm._cmap_registry:
-                        return matplotlib.cm.get_cmap(cname)
-                except:
-                    pass
-                cmap = Colormap(self._coltbl(cmap_file), name=cname)
-                matplotlib.cm.register_cmap(name=cname, cmap=cmap)
+                cmap = Colormap._get_cmap(self,cname,cmap_file)
                 setattr(self, cname, cmap)
 
-                try:
-                    if cname in matplotlib.cm._cmap_registry:
-                        return matplotlib.cm.get_cmap(cname)
-                except:
-                    pass
                 cname = cname + '_r'
-                cmap = Colormap(self._coltbl(cmap_file)[::-1], name=cname)
-                matplotlib.cm.register_cmap(name=cname, cmap=cmap)
+                cmap = Colormap._get_cmap(self,cname,cmap_file,reverse=True)
                 setattr(self, cname, cmap)

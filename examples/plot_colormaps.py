@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     ncols = 8
     nrows = len(colormaps) // ncols + 1
-    fig, axs = plt.subplots(figsize=(10, 12),nrows=nrows,ncols=ncols)
+    fig, axs = plt.subplots(figsize=(10, 8),nrows=nrows,ncols=ncols)
     fig.subplots_adjust(top=0.99, bottom=0.01, left=0.01, right=0.99,hspace=0.25,wspace=0.05)
     for (cmap,ax) in zip(colormaps,axs.flat):
         # ax.axis('off')

@@ -1,6 +1,11 @@
 cmaps
 =====
 
+Forked from hhuangwx cmaps_ repository
+
+.. _cmaps: https://github.com/hhuangwx/cmaps
+
+
 Make it easier to use user defined colormaps in matplotlib. Default colormaps are from NCL_ website.
 
 .. _NCL: http://www.ncl.ucar.edu/Document/Graphics/color_table_gallery.shtml
@@ -9,23 +14,19 @@ Make it easier to use user defined colormaps in matplotlib. Default colormaps ar
 Users can define a environmental variable CMAP_DIR pointing to the folder containing the self-defined rgb files.
 
 
-Special thanks to Dr. Shen_: for suggestions and the help of uploading this package to Pypi and anaconda cloud.
-
-.. _Shen: https://github.com/wqshen
-
 Installation::
 
-    pip install cmaps
-
-or::
-
-    conda install -c conda-forge cmaps
+    pip install git+https://github.com/amizyuk/cmaps
 
 or::
     
-    git clone https://github.com/hhuangwx/cmaps.git
-    cd cmaps
-    python setup.py install
+    git clone https://github.com/amizyuk/cmaps.git
+    pip install cmaps
+
+In case you would like to improve the code::
+
+    ...
+    pip install -e cmaps
 
 
 .. image:: examples/colormaps.png

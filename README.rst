@@ -62,6 +62,7 @@ List the colormaps using the code in the examples::
 
     import matplotlib.pyplot as plt
     import matplotlib
+    from matplotlib import patheffects
     matplotlib.rc('text', usetex=False)
 
 
@@ -73,20 +74,25 @@ List the colormaps using the code in the examples::
 
 
     if __name__ == '__main__':
-        color = list_cmaps()
+        colormaps = list_cmaps()
 
-        a = np.outer(np.arange(0, 1, 0.001), np.ones(10))
-        plt.figure(figsize=(20, 20))
-        plt.subplots_adjust(top=0.95, bottom=0.05, left=0.01, right=0.99)
-        ncmaps = len(color)
-        nrows = 8
-        for i, k in enumerate(color):
-            plt.subplot(nrows, ncmaps // nrows + 1, i + 1)
-            plt.axis('off')
-            plt.imshow(a, aspect='auto', cmap=getattr(cmaps, k), origin='lower')
-            plt.title(k, rotation=90, fontsize=10)
-            plt.title(k, fontsize=10)
-        plt.savefig('colormaps.png', dpi=300)
+        gradient = np.linspace(0, 1, 256)
+        gradient = np.vstack((gradient, gradient))
+
+        ncols = 8
+        nrows = len(colormaps) // ncols + 1
+        fig, axs = plt.subplots(figsize=(10, 8),nrows=nrows,ncols=ncols)
+        fig.subplots_adjust(top=0.99, bottom=0.01, left=0.01, right=0.99,hspace=0.25,wspace=0.05)
+        for (cmap,ax) in zip(colormaps,axs.flat):
+            # ax.axis('off')
+            ax.imshow(gradient, aspect='auto', cmap=getattr(cmaps, cmap), origin='lower')
+            ax.text(.01, 0.5, cmap, va='center', ha='left', fontsize=7,
+                    transform=ax.transAxes,
+                    path_effects=[patheffects.withStroke(linewidth=1.1,
+                                                            foreground="w")])
+        for ax in axs.flat:
+            ax.axis('off')
+        fig.savefig('colormaps.png', dpi=300)
 
 Note that "Slicing" function like list or numpy array is supported for cmaps::
 
